@@ -19,7 +19,6 @@ public class FilmController {
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        film.validate();
         log.info("Получен запрос на добавление фильма {}", film.getName());
         film.setId(idCounter++);
         films.put(film.getId(), film);
@@ -29,7 +28,6 @@ public class FilmController {
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        film.validate();
         log.info("Получен запрос на обновление фильма {}", film.getName());
         Long id = film.getId();
         if (!films.containsKey(id)) {
