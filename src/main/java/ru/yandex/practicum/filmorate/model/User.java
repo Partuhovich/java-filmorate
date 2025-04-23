@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -8,10 +7,20 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 @Data
 public class User {
     private Long id;
+    private final HashSet<Long> friendIds = new HashSet<>();
+
+    public void addFriendId(Long friendId) {
+        friendIds.add(friendId);
+    }
+
+    public void removeFriendId(Long id) {
+        friendIds.remove(id);
+    }
 
     @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Email должен быть корректным адресом электронной почты")
