@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.DuplicatedDataException;
-import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
@@ -39,8 +38,7 @@ public class UserService {
     public void addFriend(Long userId, Long friendId) {
         userStorage.existsById(userId);
         userStorage.existsById(friendId);
-
-        if (userStorage.getFriends(userId).contains(friendId)) {
+        if (userStorage.getFriends(userId).contains(userStorage.getById(friendId))) {
             throw new DuplicatedDataException(
                     String.format("Пользователь с id %d уже в друзьях у пользователя с id %d", friendId, userId)
             );
@@ -53,23 +51,16 @@ public class UserService {
     public void removeFriend(Long userId, Long friendId) {
         userStorage.existsById(userId);
         userStorage.existsById(friendId);
-
-        if (!userStorage.getFriends(userId).contains(friendId)) {
-            throw new NotFoundException(
-                    String.format("Пользователя с id %d нет в друзьях у пользователя с id %d", friendId, userId)
-            );
-        }
-
         userStorage.removeFriend(userId, friendId);
-        userStorage.removeFriend(friendId, userId); // если дружба двусторонняя
+        userStorage.removeFriend(friendId, userId);
     }
 
-    public List<Long> getFriends(Long userId) {
+    public List<User> getFriends(Long userId) {
         userStorage.existsById(userId);
         return userStorage.getFriends(userId);
     }
 
-    public List<Long> getCommonFriends(Long userId, Long otherId) {
+    public List<User> getCommonFriends(Long userId, Long otherId) {
         userStorage.existsById(userId);
         userStorage.existsById(otherId);
         return userStorage.getCommonFriends(userId, otherId);

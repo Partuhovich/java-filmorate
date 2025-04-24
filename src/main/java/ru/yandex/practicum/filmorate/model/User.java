@@ -8,11 +8,12 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
     private Long id;
-    private final HashSet<Long> friendIds = new HashSet<>();
+    private final Set<Long> friendIds = new HashSet<>();
 
     public void addFriendId(Long friendId) {
         friendIds.add(friendId);
