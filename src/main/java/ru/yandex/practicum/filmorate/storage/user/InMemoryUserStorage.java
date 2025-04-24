@@ -70,8 +70,7 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    @Override
-    public Long getNextId() {
+    private Long getNextId() {
         long currentMaxId = users.keySet()
                 .stream()
                 .mapToLong(id -> id)

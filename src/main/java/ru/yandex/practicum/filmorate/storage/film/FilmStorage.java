@@ -20,6 +20,4 @@ public interface FilmStorage {
     List<Film> getPopularFilms(int count);
 
     void existsById(Long id);
-
-    Long getNextId();
 }
