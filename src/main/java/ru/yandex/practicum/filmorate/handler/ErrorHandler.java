@@ -9,9 +9,6 @@ import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
-import java.util.stream.Collectors;
-
-
 @RestControllerAdvice
 public class ErrorHandler {
 
