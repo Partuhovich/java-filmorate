@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exeption.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -20,6 +21,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User user) {
+        existsById(user.getId());
         users.put(user.getId(), user);
         return user;
     }
@@ -31,30 +33,50 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getById(Long id) {
+        existsById(id);
         return users.get(id);
     }
 
     @Override
     public void addFriend(Long userId, Long friendId) {
-        users.get(userId).addFriendId(friendId);
+        User user = getById(userId);
+        User friend = getById(friendId);
+
+        if (user.getFriends().containsKey(friendId)) {
+            throw new DuplicatedDataException(
+                    String.format("Пользователь с id %d уже в друзьях у пользователя с id %d", friendId, userId)
+            );
+        }
+
+        user.addFriend(friendId, false);
+
+        if (friend.getFriends().containsKey(userId)) {
+            user.getFriends().put(friendId, true);
+            friend.getFriends().put(userId, true);
+        }
     }
 
     @Override
     public void removeFriend(Long userId, Long friendId) {
-        users.get(userId).removeFriendId(friendId);
+        User user = getById(userId);
+        User friend = getById(friendId);
+
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(userId);
     }
 
     @Override
     public List<User> getFriends(Long userId) {
-        return users.get(userId).getFriendIds().stream()
+        User user = getById(userId);
+        return user.getFriends().keySet().stream()
                 .map(this::getById)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<User> getCommonFriends(Long userId, Long otherId) {
-        Set<Long> userFriends = users.get(userId).getFriendIds();
-        Set<Long> otherFriends = users.get(otherId).getFriendIds();
+        Set<Long> userFriends = getById(userId).getFriends().keySet();
+        Set<Long> otherFriends = getById(otherId).getFriends().keySet();
 
         return userFriends.stream()
                 .filter(otherFriends::contains)

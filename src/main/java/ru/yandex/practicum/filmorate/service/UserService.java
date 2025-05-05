@@ -22,7 +22,6 @@ public class UserService {
 
     public User update(User user) {
         user.validate();
-        userStorage.existsById(user.getId());
         return userStorage.update(user);
     }
 
@@ -31,38 +30,22 @@ public class UserService {
     }
 
     public User getUserById(Long userId) {
-        userStorage.existsById(userId);
         return userStorage.getById(userId);
     }
 
     public void addFriend(Long userId, Long friendId) {
-        userStorage.existsById(userId);
-        userStorage.existsById(friendId);
-        if (userStorage.getFriends(userId).contains(userStorage.getById(friendId))) {
-            throw new DuplicatedDataException(
-                    String.format("Пользователь с id %d уже в друзьях у пользователя с id %d", friendId, userId)
-            );
-        }
-
         userStorage.addFriend(userId, friendId);
-        userStorage.addFriend(friendId, userId);
     }
 
     public void removeFriend(Long userId, Long friendId) {
-        userStorage.existsById(userId);
-        userStorage.existsById(friendId);
         userStorage.removeFriend(userId, friendId);
-        userStorage.removeFriend(friendId, userId);
     }
 
     public List<User> getFriends(Long userId) {
-        userStorage.existsById(userId);
         return userStorage.getFriends(userId);
     }
 
     public List<User> getCommonFriends(Long userId, Long otherId) {
-        userStorage.existsById(userId);
-        userStorage.existsById(otherId);
         return userStorage.getCommonFriends(userId, otherId);
     }
 }
