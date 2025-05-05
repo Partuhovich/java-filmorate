@@ -4,15 +4,20 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.enums.Genre;
+import ru.yandex.practicum.filmorate.enums.MpaRating;
 import ru.yandex.practicum.filmorate.validator.ReleaseDate;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
     private Long id;
     private final HashSet<Long> likes = new HashSet<>();
+    private Set<Genre> genres = new HashSet<>();
+    private MpaRating mpa;
 
     public void addLike(Long userId) {
         likes.add(userId);
