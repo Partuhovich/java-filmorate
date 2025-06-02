@@ -20,4 +20,6 @@ public interface FilmStorage {
     List<Film> getPopularFilms(int count);
 
     void existsById(Long id);
+
+    boolean likeExists(Long filmId, Long userId);
 }
